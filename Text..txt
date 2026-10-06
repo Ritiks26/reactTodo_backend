@@ -1,0 +1,20 @@
+mkdir todo-backend
+cd todo-backend
+npm init -y
+
+npm install express drizzle-orm pg dotenv bcryptjs jsonwebtoken cors
+npm install -D drizzle-kit nodemon
+
+express — server/routing
+drizzle-orm + pg — DB aur ORM
+dotenv — env variables
+bcryptjs — password hashing
+jsonwebtoken — JWT auth
+cors — frontend se connect karne ke liye
+drizzle-kit — migrations
+nodemon — dev mein auto-restart
+
+
+=>
+npx drizzle-kit generate
+npx drizzle-kit migrate
