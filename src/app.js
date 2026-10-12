@@ -20,6 +20,12 @@ app.use(
 );
 
 app.use(express.json());
+app.set("etag", false);
+
+app.use("/api", (req, res, next) => {
+  res.set("Cache-control", "no-store");
+  next();
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/todos", todoRoutes);
