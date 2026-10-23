@@ -6,10 +6,6 @@ export const createTodo = async (req, res) => {
   try {
     const { title, description, priority, dueDate } = req.body;
 
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
-    }
-
     const [newTodo] = await db
       .insert(todos)
       .values({
@@ -17,7 +13,7 @@ export const createTodo = async (req, res) => {
         title,
         description,
         priority,
-        dueDate: dueDate ? new Date(dueDate) : null,
+        dueDate: dueDate ?? null,
       })
       .returning();
 
@@ -45,25 +41,20 @@ export const getTodos = async (req, res) => {
 export const updateTodo = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, completed, priority, dueDate } = req.body;
-    const [updateTodo] = await db
+    const [updatedTodo] = await db
       .update(todos)
       .set({
-        title,
-        description,
-        completed,
-        priority,
-        dueDate,
+        ...req.body,
         updatedAt: new Date(),
       })
-      .where(and(eq(todos.id, Number(id)), eq(todos.userId, req.user.id)))
+      .where(and(eq(todos.id, id), eq(todos.userId, req.user.id)))
       .returning();
 
-    if (!updateTodo) {
+    if (!updatedTodo) {
       return res.status(404).json({ message: "Todo not found" });
     }
 
-    res.json({ message: "Todo updated", todo: updateTodo });
+    res.json({ message: "Todo updated", todo: updatedTodo });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
@@ -74,12 +65,12 @@ export const deleteTodo = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const [deleteTodo] = await db
+    const [deletedTodo] = await db
       .delete(todos)
-      .where(and(eq(todos.id, Number(id)), eq(todos.userId, req.user.id)))
+      .where(and(eq(todos.id, id), eq(todos.userId, req.user.id)))
       .returning();
 
-    if (!deleteTodo) {
+    if (!deletedTodo) {
       return res.status(404).json({ message: "Todo not found" });
     }
 

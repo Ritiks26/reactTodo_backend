@@ -1,5 +1,4 @@
 import {
-  PgTable,
   serial,
   varchar,
   text,

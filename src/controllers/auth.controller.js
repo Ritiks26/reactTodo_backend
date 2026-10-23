@@ -1,4 +1,4 @@
-import bycrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
@@ -7,10 +7,6 @@ import { eq } from "drizzle-orm";
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
 
     const existingUser = await db
       .select()
@@ -21,7 +17,7 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bycrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const [newUser] = await db
       .insert(users)
@@ -38,16 +34,12 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and Password Required" });
-    }
-
     const [user] = await db.select().from(users).where(eq(users.email, email));
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const isMatch = await bycrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
