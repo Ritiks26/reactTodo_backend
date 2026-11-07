@@ -27,6 +27,10 @@ app.use("/api", (req, res, next) => {
   next();
 });
 
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/todos", todoRoutes);
 
