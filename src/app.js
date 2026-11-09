@@ -14,6 +14,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "https://taskyapp-delta.vercel.app",
+      "http://172.16.2.41:5173",
     ],
     credentials: true,
   }),
